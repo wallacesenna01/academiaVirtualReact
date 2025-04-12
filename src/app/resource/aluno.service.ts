@@ -1,11 +1,11 @@
 import { Aluno } from "./aluno.resource";
 
 export class AlunoService {
-    baseUrl: string = 'http://localhost:8080/alunos/salvar';
+    baseUrl: string = 'http://localhost:8080/alunos';
 
     async buscar() :Promise<Aluno[]> {
         const response = await fetch(this.baseUrl, {
-            method: 'GET'
+            method: 'GET',
         });
 
         if(!response.ok) {
@@ -17,7 +17,7 @@ export class AlunoService {
     
 
     async salvar(aluno: Aluno) : Promise<void> {
-        const response = await fetch(this.baseUrl, {
+        const response = await fetch(`${this.baseUrl}/salvar`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"

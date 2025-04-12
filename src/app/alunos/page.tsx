@@ -1,8 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Template from '@/app/components/Template'
 import  {AlunoService}  from '@/app/resource/aluno.service';
+
+
+
+interface Aluno {
+  name: string;
+  email: string;
+  birthday: string;
+  cpf: string;
+  phone: string;
+}
 
 
 export default function NovoAlunoPage() {
@@ -11,6 +21,7 @@ export default function NovoAlunoPage() {
   const [dataNascimento, setDataNascimento] = useState('');
   const [cpf, setCpf] = useState('');
   const [phone, setPhone] = useState('')
+  const [alunos, setAlunos] = useState<Aluno[]>([]); // Lista de alunos
 
   const handleSubmit  = async (e: React.FormEvent) => {
 
@@ -43,6 +54,24 @@ export default function NovoAlunoPage() {
         alert('Erro ao cadastrar aluno.');
       }
     };
+
+    const listarAlunos = async () => {
+
+      const alunoService = new AlunoService(); // Cria a instância da AlunoService
+      try {
+        const resposta = await alunoService.buscar(); // Chama o método listar da AlunoService
+        setAlunos(resposta); // Atualiza o estado com a lista de alunos
+      } catch (error) {
+        console.error('Erro ao listar alunos', error);
+        alert('Erro ao listar alunos');
+      }
+    };
+
+    useEffect(() => {
+      listarAlunos(); // Chama a função de listar alunos assim que a página é carregada
+    }, []);
+  
+    
 
   return (
     <Template>
@@ -113,6 +142,27 @@ export default function NovoAlunoPage() {
           Salvar
         </button>
       </form>
+
+
+      <div className="mt-8">
+        <h2 className="text-xl font-bold">Lista de Alunos</h2>
+        {alunos.length === 0 ? (
+          <p className="mt-4 text-gray-500">Nenhum aluno encontrado.</p>
+        ) : (
+          <ul className="mt-4 space-y-2">
+            {alunos.map((aluno, index) => (
+              <li key={index} className="border p-2 rounded shadow">
+                <strong>{aluno.name}</strong><br />
+                Email: {aluno.email}<br />
+                Nascimento: {aluno.birthday}<br />
+                CPF: {aluno.cpf}<br />
+                Fone: {aluno.phone}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
     </Template>
   );
 }
