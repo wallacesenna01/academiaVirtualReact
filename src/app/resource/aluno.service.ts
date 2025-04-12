@@ -1,15 +1,20 @@
 import { Aluno } from "./aluno.resource";
 
 export class AlunoService {
-    baseUrl: string = 'http://localhost:8080/alunos';
+    baseUrl: string = 'http://localhost:8080/alunos/salvar';
 
     async buscar() :Promise<Aluno[]> {
-        const response = await fetch(this.baseUrl);
+        const response = await fetch(this.baseUrl, {
+            method: 'GET'
+        });
+
         if(!response.ok) {
             throw new Error("erro ao buscar aluno");
         }
         return await response.json();
     }
+
+    
 
     async salvar(aluno: Aluno) : Promise<void> {
         const response = await fetch(this.baseUrl, {
