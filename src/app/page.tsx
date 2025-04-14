@@ -2,22 +2,40 @@
 
 import { useState } from "react";
 import Template from "./components/Template";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Lógica fake de validação só pra teste
-    if (email === "admin@email.com" && senha === "123456") {
-      setErro("");
-      alert("Login realizado com sucesso!");
-      // Aqui você poderia redirecionar para o /home
-    } else {
-      setErro("Email ou senha inválidos.");
+    try {
+      const response = await fetch("http://localhost:8080/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: email,
+          password: senha
+        })
+      });
+
+      if (response.ok) {
+        // Login OK, redirecionar
+        router.push("/alunos");
+      } else {
+        const errorMsg = await response.text();
+        setErro(errorMsg || "Falha no login.");
+      }
+    } catch (err) {
+      setErro("Erro ao conectar com o servidor.");
+      console.error(err);
     }
   };
 
