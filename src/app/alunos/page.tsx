@@ -3,16 +3,9 @@
 import { useState, useEffect } from 'react';
 import Template from '@/app/components/Template'
 import  {AlunoService}  from '@/app/resource/aluno.service';
+import {Aluno} from '@/app/resource/aluno.resource'
 
 
-
-interface Aluno {
-  name: string;
-  email: string;
-  birthday: string;
-  cpf: string;
-  phone: string;
-}
 
 
 export default function NovoAlunoPage() {
